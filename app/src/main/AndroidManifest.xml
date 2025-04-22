@@ -2,16 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Required permission for audio recording -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
-    <!-- Required for starting foreground services (especially from background/widgets) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- More specific type for Android 14+ (API 34+) -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
-
-    <!-- Required for showing notifications on Android 13+ (API 33+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
 
     <application
         android:allowBackup="true"
@@ -22,29 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AudioWidgetApp"
-        tools:targetApi="34">
+        tools:targetApi="31">
 
-        <!-- Declare the App Widget Provider -->
-        <receiver
-            android:name=".AudioWidget"
-            android:exported="false"
-            android:label="@string/widget_name">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/audio_widget_info" />
-        </receiver>
-
-        <!-- Declare the Recording Service -->
-        <service
-            android:name=".AudioRecorderService"
-            android:exported="false"
-            android:foregroundServiceType="microphone" />
-
-        <!-- Main Activity (Launcher) -->
-         <activity
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -52,6 +26,33 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".AudioWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.example.audiowidget.ACTION_WIDGET_CLICK"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/audio_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".AudioRecorderService"
+            android:foregroundServiceType="microphone"
+            android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
     </application>
 
