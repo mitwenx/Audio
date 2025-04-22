@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.audiowidget">
+
+    <!-- Required permission for audio recording -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- Required for starting foreground services (especially from background/widgets) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- More specific type for Android 14+ (API 34+) -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
+
+
+    <!-- Required for showing notifications on Android 13+ (API 33+) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.AudioWidgetApp"
+        tools:targetApi="34"> <!-- Updated targetApi -->
+
+        <!-- Declare the App Widget Provider -->
+        <receiver
+            android:name=".AudioWidget"
+            android:exported="true"
+            android:label="@string/widget_name">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!-- Add custom action for click handling (use package name for uniqueness) -->
+                <action android:name="com.example.audiowidget.WIDGET_CLICK" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/audio_widget_info" />
+        </receiver>
+
+        <!-- Declare the Recording Service -->
+        <service
+            android:name=".AudioRecorderService"
+            android:exported="false"
+            android:foregroundServiceType="microphone" /> <!-- Declare foreground service type -->
+
+        <!-- Dummy Activity required for launcher icon -->
+         <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
