@@ -1,18 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Audio Widget</string>
-
-
-    <string name="channel_name">Audio Recording Service</string>
-    <string name="channel_description">Notification channel for audio recording service</string>
-
-
-    <string name="widget_name">Audio Recorder Widget</string>
+    <string name="app_name">Audio Recorder Widget</string>
+    <string name="widget_description">Double-click to record/stop audio.</string>
     <string name="widget_cd_record">Start recording</string>
     <string name="widget_cd_stop">Stop recording</string>
-    <string name="widget_description">Double-click to record audio</string>
-
-    
-    <string name="app_info_text">Audio Widget App\n- Add widget to home screen.\n- Double-click to start/stop.\n- Recordings saved in app files.\n- Grant permissions.</string>
-
+    <string name="channel_name">Audio Recording Service</string>
+    <string name="channel_description">Notification channel for the audio recording service</string>
+    <string name="notification_title">Audio Recording</string>
+    <string name="notification_text">Recording in progress...</string>
+    <string name="permission_rationale">Record audio permission is needed to record audio. Notification permission is needed for foreground service status.</string>
+    <string name="permissions_granted">Permissions Granted!</string>
+    <string name="permissions_denied">Some permissions were denied. App functionality may be limited.</string>
+    <string name="no_recordings_found">No recordings found. Use the widget to record.</string>
+    <string name="play_button_cd">Play recording</string>
+    <string name="pause_button_cd">Pause recording</string>
+    <string name="share_button_cd">Share recording</string>
+    <string name="share_recording_title">Share Recording</string>
+    <string name="error_playback">Error playing audio.</string>
+    <string name="error_share">Could not share file.</string>
+    <string name="recording_stopped">Recording Stopped</string>
+    <string name="recording_started">Recording Started</string>
+    <string name="error_start_service">Error: Could not start service.</string>
+    <string name="error_start_recording">Error starting recording.</string>
+    <string name="error_permission_missing">Error: Permission missing?</string>
 </resources>
