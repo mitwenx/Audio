@@ -4,22 +4,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".MainActivity">
+
+    
+    <TextView
+        android:id="@+id/info_text_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/app_info_text"
+        android:layout_marginBottom="16dp"
+        android:gravity="center_horizontal"/>
+
+    
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider"
+        android:layout_marginBottom="16dp"/>
+
+    
     <TextView
         android:id="@+id/title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Recordings"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:textStyle="bold"
-        android:padding="16dp"
-        android:gravity="center_horizontal"/>
+        android:layout_marginBottom="8dp"/>
+
+    
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recordings_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingHorizontal="8dp"
         tools:listitem="@layout/list_item_recording" />
 
 </LinearLayout>
