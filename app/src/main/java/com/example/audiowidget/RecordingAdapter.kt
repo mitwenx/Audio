@@ -16,8 +16,9 @@ class RecordingAdapter(
     private val onItemClicked: (File) -> Unit
 ) : RecyclerView.Adapter<RecordingAdapter.RecordingViewHolder>() {
 
+    
     private val outputFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-    private val inputPattern = Regex("recording_(\\d+)\\.3gp")
+    private val inputPattern = Regex("recording_(\\d+)\\.m4a")
 
     inner class RecordingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val filenameTextView: TextView = itemView.findViewById(R.id.recording_filename_text)
@@ -36,7 +37,8 @@ class RecordingAdapter(
                 try {
                     val timestamp = matchResult.groupValues[1].toLong()
                     val date = Date(timestamp)
-                    "Rec_${outputFormat.format(date)}.3gp"
+                    
+                    "Rec_${outputFormat.format(date)}.m4a"
                 } catch (e: Exception) {
                     originalName
                 }
