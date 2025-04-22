@@ -1,11 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Audio Widget</string>
 
-    
+
     <string name="channel_name">Audio Recording Service</string>
     <string name="channel_description">Notification channel for audio recording service</string>
 
-    
+
+    <string name="widget_name">Audio Recorder Widget</string>
     <string name="widget_cd_record">Start recording</string>
     <string name="widget_cd_stop">Stop recording</string>
     <string name="widget_description">Double-click to record audio</string>
