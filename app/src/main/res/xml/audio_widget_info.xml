@@ -13,5 +13,4 @@
      android:description="@string/widget_description">
      <!-- Ensure there are no extra characters before the closing </appwidget-provider> -->
  </appwidget-provider>
- ```
- *   *Common error:* Accidentally deleting the `>` at the end of the `<appwidget-provider ... >` line, or having extra text before the final `</appwidget-provider>`.
+ 
