@@ -23,6 +23,11 @@ class AudioRecorderService : Service() {
         private const val CHANNEL_ID = "AudioRecorderServiceChannel"
         private const val NOTIFICATION_ID = 1
         private const val TAG = "AudioRecorderService"
+        private const val AUDIO_BITRATE = 128000 // Standard quality bitrate for AAC
+        private const val AUDIO_SAMPLE_RATE = 44100 // Standard CD quality sample rate
+        private const val FILE_EXTENSION = ".m4a" // Use M4A extension for AAC audio in MP4 container
+        private const val OUTPUT_FORMAT = MediaRecorder.OutputFormat.MPEG_4 // MP4 Container
+        private const val AUDIO_ENCODER = MediaRecorder.AudioEncoder.AAC // High-quality AAC encoder
     }
 
     override fun onCreate() {
@@ -81,7 +86,7 @@ class AudioRecorderService : Service() {
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(getString(R.string.notification_title))
             .setContentText(getString(R.string.notification_text))
-            .setSmallIcon(R.drawable.ic_mic_widget)
+            .setSmallIcon(R.drawable.ic_mic_widget) // Ensure this drawable exists
             .setContentIntent(pendingIntent)
             .setOngoing(true)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
@@ -108,7 +113,8 @@ class AudioRecorderService : Service() {
             }
 
             val timestamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())
-            outputFile = File(storageDir, "recording_$timestamp.3gp")
+            // Use the new file extension
+            outputFile = File(storageDir, "recording_$timestamp$FILE_EXTENSION")
             Log.d(TAG, "Attempting to record to: ${outputFile?.absolutePath}")
 
             recorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -120,25 +126,35 @@ class AudioRecorderService : Service() {
 
             recorder?.apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                // Set the output format to MPEG_4 (MP4 container)
+                setOutputFormat(OUTPUT_FORMAT)
                 setOutputFile(outputFile!!.absolutePath)
-                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+                // Set the audio encoder to AAC
+                setAudioEncoder(AUDIO_ENCODER)
+                // Optionally set bitrate and sample rate for quality control
+                setAudioEncodingBitRate(AUDIO_BITRATE)
+                setAudioSamplingRate(AUDIO_SAMPLE_RATE)
 
                 try {
                     prepare()
                     start()
-                    Log.i(TAG, "Recording started successfully.")
+                    Log.i(TAG, "Recording started successfully (Format: $OUTPUT_FORMAT, Encoder: $AUDIO_ENCODER).")
                 } catch (e: IllegalStateException) {
                     Log.e(TAG, "IllegalStateException on prepare/start: ${e.message}", e)
                     stopRecordingAndCleanup()
                     stopSelf()
                 } catch (e: IOException) {
                     Log.e(TAG, "IOException on prepare: ${e.message}", e)
-                    Log.e(TAG,"Does the app have RECORD_AUDIO permission?")
+                    Log.e(TAG,"Does the app have RECORD_AUDIO permission or sufficient storage?")
                     stopRecordingAndCleanup()
                     stopSelf()
                 } catch (e: SecurityException) {
                     Log.e(TAG, "SecurityException: Missing RECORD_AUDIO permission? ${e.message}", e)
+                    stopRecordingAndCleanup()
+                    stopSelf()
+                } catch(e: RuntimeException) {
+                    // Catch RuntimeException which can occur if encoder/format is unsupported
+                    Log.e(TAG, "RuntimeException on prepare/start (Unsupported format/encoder?): ${e.message}", e)
                     stopRecordingAndCleanup()
                     stopSelf()
                 }
@@ -163,10 +179,18 @@ class AudioRecorderService : Service() {
                     stop()
                     Log.d(TAG, "Recorder stopped.")
                 } catch (stopException: IllegalStateException) {
-                    Log.w(TAG, "Exception stopping recorder: ${stopException.message}")
+                    // This can happen if stop() is called before start() or after release()
+                    Log.w(TAG, "Exception stopping recorder (might not have been started or already stopped): ${stopException.message}")
+                    // Consider deleting the file if stop failed, as it might be corrupt/empty
+                    outputFile?.delete()
+                    Log.w(TAG,"Deleted potentially incomplete file: ${outputFile?.name}")
+                } catch (runtimeException: RuntimeException) {
+                    // Stop can also throw RuntimeException on some devices/conditions
+                    Log.w(TAG, "RuntimeException stopping recorder: ${runtimeException.message}")
                     outputFile?.delete()
                     Log.w(TAG,"Deleted potentially incomplete file: ${outputFile?.name}")
                 }
+                // release() should always be called to free resources
                 release()
                 Log.d(TAG, "Recorder released.")
             }
@@ -174,7 +198,7 @@ class AudioRecorderService : Service() {
             Log.e(TAG, "Exception during recorder cleanup: ${e.message}", e)
         } finally {
             recorder = null
-            outputFile = null
+            outputFile = null // Clear file reference
             Log.d(TAG, "Recorder resources cleaned up.")
         }
     }
@@ -185,6 +209,7 @@ class AudioRecorderService : Service() {
         ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         Log.d(TAG,"stopForeground called.")
         super.onDestroy()
+        // Update widgets to reflect service stopped state
         AudioWidget.updateAllWidgets(this)
     }
 
