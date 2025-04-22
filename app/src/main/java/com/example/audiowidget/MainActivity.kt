@@ -105,7 +105,8 @@ class MainActivity : AppCompatActivity() {
 
         val storageDir = getExternalFilesDir(null)
         if (storageDir != null && storageDir.exists()) {
-            val files = storageDir.listFiles { _, name -> name.endsWith(".3gp") } // Filter for our recording files
+            // --- Filter for .m4a files ---
+            val files = storageDir.listFiles { _, name -> name.endsWith(".m4a") }
             if (files != null) {
                 // Sort files by name (which includes timestamp) descending (newest first)
                 files.sortByDescending { it.name }
@@ -181,8 +182,8 @@ class MainActivity : AppCompatActivity() {
                  if (it.isPlaying) {
                      it.stop()
                  }
-                 it.reset() // Reset state
-                 it.release() // Release resources
+                 it.reset() 
+                 it.release() 
                  Log.d(TAG, "MediaPlayer stopped and released.")
              } catch (e: IllegalStateException) {
                   Log.w(TAG, "Error stopping/releasing MediaPlayer: ${e.message}")
@@ -219,7 +220,6 @@ class MainActivity : AppCompatActivity() {
             requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
         } else {
             Log.d(TAG, "All necessary permissions already granted.")
-            // Load recordings now since permissions are granted
              loadRecordings()
         }
     }
