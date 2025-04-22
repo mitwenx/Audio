@@ -38,7 +38,8 @@ APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
 # Add default JVM options here. You can also use JAVA_OPTS and GRADLE_OPTS to pass JVM options to this script.
-DEFAULT_JVM_OPTS='"-Xmx64m" "-Xms64m"'
+# Updated: Removed internal quotes
+DEFAULT_JVM_OPTS="-Xmx64m -Xms64m"
 
 # Use the maximum available, or set MAX_FD != -1 to use that value.
 MAX_FD="maximum"
@@ -154,14 +155,7 @@ if $cygwin || $msys; then
     fi
 fi
 
-# Split up the JVM_OPTS And GRADLE_OPTS values into an array, following the shell quoting and substitution rules
-function splitJvmOpts() {
-    JVM_OPTS=()
-    for opt in $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS; do
-        # echo "Processing Allocation: $opt"
-        JVM_OPTS=("${JVM_OPTS[@]}" "$opt")
-    done
-}
-splitJvmOpts
+# Removed the splitJvmOpts function and its call
 
-exec "$JAVACMD" "${JVM_OPTS[@]}" -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
+# Updated: Pass JVM options directly using shell expansion
+exec "$JAVACMD" $DEFAULT_JVM_OPTS $JAVA_OPTS $GRADLE_OPTS -classpath "$CLASSPATH" org.gradle.wrapper.GradleWrapperMain "$@"
