@@ -117,7 +117,8 @@ class AudioRecorderService : Service() {
                 storageDir.mkdirs()
             }
 
-            outputFile = File(storageDir, "recording_${System.currentTimeMillis()}.3gp")
+            // --- Use .m4a extension for better quality ---
+            outputFile = File(storageDir, "recording_${System.currentTimeMillis()}.m4a")
             Log.d(TAG, "Attempting to record to: ${outputFile?.absolutePath}")
 
             recorder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -129,14 +130,18 @@ class AudioRecorderService : Service() {
 
             recorder?.apply {
                 setAudioSource(MediaRecorder.AudioSource.MIC)
-                setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                // --- SETTINGS FOR HIGHER QUALITY ---
+                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4) // Use MPEG_4 container (.m4a)
+                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)     // Use AAC encoder (High Quality)
+                setAudioSamplingRate(44100)                         // Standard CD quality sample rate
+                setAudioEncodingBitRate(128000)                     // Good quality bitrate (e.g., 96k, 128k, 192k)
+                // --- END OF QUALITY SETTINGS ---
                 setOutputFile(outputFile!!.absolutePath) // Use !! as we checked storageDir
-                setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
                 try {
                     prepare()
                     start()
-                    Log.i(TAG, "Recording started successfully.")
+                    Log.i(TAG, "Recording started successfully (AAC).") // Log format change
                 } catch (e: IllegalStateException) {
                     Log.e(TAG, "IllegalStateException on prepare/start: ${e.message}", e)
                     stopRecordingAndCleanup() // Clean up resources
@@ -179,7 +184,7 @@ class AudioRecorderService : Service() {
                     Log.d(TAG, "Recorder stopped.")
                 } catch (stopException: IllegalStateException) {
                     Log.w(TAG, "Exception stopping recorder (might have already been stopped or not started): ${stopException.message}")
-                    // If stop fails, file might be invalid, consider deleting
+                    
                     outputFile?.delete()
                     Log.w(TAG,"Deleted potentially incomplete file: ${outputFile?.name}")
                 }
