@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<data-extraction-rules>
+    <cloud-backup>
+        <!-- TODO: Set backupRules to specify which files/directories should be backed up -->
+        <!-- <include domain="sharedpref" path="."/> -->
+        <!-- <include domain="database" path="."/> -->
+        <!-- <include domain="file" path="."/> -->
+        <!-- <include domain="external" path="."/> -->
+        <!-- <include domain="root" path="."/> -->
+
+        <!-- Recordings should likely be excluded unless small or user explicitly opts-in -->
+        <exclude domain="external" path="." /> <!-- Exclude external files dir where recordings are -->
+    </cloud-backup>
+    <device-transfer>
+        <!-- TODO: Set transferRules to specify which files/directories should be transferred -->
+        <!-- <include domain="sharedpref" path="."/> -->
+        <!-- <include domain="database" path="."/> -->
+        <!-- <include domain="file" path="."/> -->
+        <!-- <include domain="external" path="."/> -->
+        <!-- <include domain="root" path="."/> -->
+
+        <exclude domain="external" path="." /> <!-- Exclude external files dir where recordings are -->
+    </device-transfer>
+</data-extraction-rules>
