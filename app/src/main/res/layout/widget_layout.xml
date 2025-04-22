@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:padding="8dp"
-    android:background="@android:color/transparent">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp">
 
-    <!-- Icon representing the widget's function -->
     <ImageView
         android:id="@+id/widget_icon"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:src="@drawable/ic_mic_widget" /* Default icon */
-        android:scaleType="centerInside"
-        android:background="?attr/selectableItemBackgroundBorderless" /* Ripple effect */
-        android:contentDescription="@string/widget_cd_record" /* Default description */
-        tools:src="@drawable/ic_mic_widget"/>
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_mic_widget"
+        android:contentDescription="@string/widget_cd_record" />
 
-</FrameLayout>
+</LinearLayout>
