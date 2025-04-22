@@ -4,8 +4,6 @@
     <string name="widget_description">Double-click to record audio</string>
     <string name="widget_cd_record">Start audio recording (Double-click)</string>
     <string name="widget_cd_stop">Stop audio recording (Double-click)</string>
-
-    <!-- Notification Channel -->
     <string name="channel_name">Audio Recording</string>
     <string name="channel_description">Notification shown while audio is being recorded</string>
 </resources>
