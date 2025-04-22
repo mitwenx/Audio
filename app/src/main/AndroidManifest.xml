@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.audiowidget">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Required permission for audio recording -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -10,7 +9,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <!-- More specific type for Android 14+ (API 34+) -->
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE"/>
-
 
     <!-- Required for showing notifications on Android 13+ (API 33+) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
@@ -24,17 +22,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AudioWidgetApp"
-        tools:targetApi="34"> <!-- Updated targetApi -->
+        tools:targetApi="34">
 
         <!-- Declare the App Widget Provider -->
         <receiver
             android:name=".AudioWidget"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/widget_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <!-- Add custom action for click handling (use package name for uniqueness) -->
-                <action android:name="com.example.audiowidget.WIDGET_CLICK" />
             </intent-filter>
             <meta-data
                 android:name="android.appwidget.provider"
@@ -45,9 +41,9 @@
         <service
             android:name=".AudioRecorderService"
             android:exported="false"
-            android:foregroundServiceType="microphone" /> <!-- Declare foreground service type -->
+            android:foregroundServiceType="microphone" />
 
-        <!-- Dummy Activity required for launcher icon -->
+        <!-- Main Activity (Launcher) -->
          <activity
             android:name=".MainActivity"
             android:exported="true">
