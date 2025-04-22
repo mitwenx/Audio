@@ -1,10 +1,13 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24"
-    android:tint="@color/red_stop"> <!-- Use a specific stop color -->
-  <path
-      android:fillColor="@android:color/white" <!-- Use white and rely on tint -->
-      android:pathData="M6,6h12v12H6z"/>
-</vector>
+ 
+ <vector xmlns:android="http://schemas.android.com/apk/res/android"
+     android:width="24dp"
+     android:height="24dp"
+     android:viewportWidth="24"
+     android:viewportHeight="24"
+     android:tint="?attr/colorControlNormal"> <!-- Or your desired color -->
+   <path
+       android:fillColor="@android:color/white" <!-- Or your color -->
+       android:pathData="M6,6h12v12H6z"/> <!-- <<<< ENSURE IT ENDS WITH /> -->
+   <!-- Add other path elements if needed, each ending with /> -->
+ </vector>
+ 
