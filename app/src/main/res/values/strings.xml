@@ -1,5 +1,5 @@
 <resources>
-    <string name="widget_name">Audio Recorder Widget</string>
+    <string name="app_name">Audio Widget</string>
 
     
     <string name="channel_name">Audio Recording Service</string>
