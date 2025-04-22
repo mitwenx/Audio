@@ -78,21 +78,30 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadRecordings() {
         val storageDir = getExternalFilesDir(null)
-        if (storageDir != null) {
-            val files = storageDir.listFiles { _, name -> name.endsWith(".3gp") }
-                ?.sortedByDescending { it.lastModified() }
-                ?: emptyArray()
+        if (storageDir != null && storageDir.exists()) {
+            val filesArray = storageDir.listFiles { _, name -> name.endsWith(".3gp") }
+            val filesList: List<File> = if (filesArray != null) {
+                 filesArray.sortedByDescending { it.lastModified() }
+            } else {
+                 emptyList()
+            }
 
-            recordingAdapter.submitList(files.toList())
-            binding.textViewEmpty.visibility = if (files.isEmpty()) View.VISIBLE else View.GONE
-            binding.recyclerViewRecordings.visibility = if (files.isEmpty()) View.GONE else View.VISIBLE
+            recordingAdapter.submitList(filesList)
+            binding.textViewEmpty.visibility = if (filesList.isEmpty()) View.VISIBLE else View.GONE
+            binding.recyclerViewRecordings.visibility = if (filesList.isEmpty()) View.GONE else View.VISIBLE
         } else {
+            recordingAdapter.submitList(emptyList())
             binding.textViewEmpty.visibility = View.VISIBLE
             binding.recyclerViewRecordings.visibility = View.GONE
-            Log.e("MainActivity", "External storage directory not found.")
+            if (storageDir == null) {
+                Log.e("MainActivity", "External storage directory not found.")
+            } else {
+                 Log.w("MainActivity", "External storage directory does not exist: ${storageDir.absolutePath}")
+            }
         }
         resetPlaybackStateVisuals()
     }
+
 
     private fun handlePlayPause(file: File, position: Int) {
         if (mediaPlayer != null && currentlyPlayingFile == file) {
@@ -123,20 +132,24 @@ class MainActivity : AppCompatActivity() {
                 setOnCompletionListener {
                     stopPlayback()
                 }
-                setOnErrorListener { _, what, extra ->
-                    Log.e("MainActivity", "MediaPlayer Error: what=$what, extra=$extra")
+                setOnErrorListener { mp, what, extra ->
+                    Log.e("MainActivity", "MediaPlayer Error: what=$what, extra=$extra for file: ${file.absolutePath}")
                     Toast.makeText(this@MainActivity, R.string.error_playback, Toast.LENGTH_SHORT).show()
                     stopPlayback()
                     true
                 }
             } catch (e: IOException) {
-                Log.e("MainActivity", "MediaPlayer prepare failed", e)
+                Log.e("MainActivity", "MediaPlayer prepare failed for file: ${file.absolutePath}", e)
                 Toast.makeText(this@MainActivity, R.string.error_playback, Toast.LENGTH_SHORT).show()
                 stopPlayback()
             } catch (e: IllegalStateException) {
-                Log.e("MainActivity", "MediaPlayer state error", e)
+                Log.e("MainActivity", "MediaPlayer state error for file: ${file.absolutePath}", e)
                  Toast.makeText(this@MainActivity, R.string.error_playback, Toast.LENGTH_SHORT).show()
                  stopPlayback()
+            } catch (e: SecurityException) {
+                Log.e("MainActivity", "MediaPlayer security error for file: ${file.absolutePath}", e)
+                Toast.makeText(this@MainActivity, R.string.error_playback, Toast.LENGTH_SHORT).show()
+                stopPlayback()
             }
         }
     }
@@ -156,6 +169,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun shareRecording(file: File) {
+        if (!file.exists()) {
+            Log.e("MainActivity", "Share failed: File does not exist: ${file.absolutePath}")
+            Toast.makeText(this, R.string.error_share, Toast.LENGTH_SHORT).show()
+            return
+        }
         try {
             val contentUri: Uri = FileProvider.getUriForFile(
                 this,
@@ -171,10 +189,10 @@ class MainActivity : AppCompatActivity() {
             }
             startActivity(Intent.createChooser(shareIntent, getString(R.string.share_recording_title)))
         } catch (e: IllegalArgumentException) {
-            Log.e("MainActivity", "FileProvider URI generation failed.", e)
+            Log.e("MainActivity", "FileProvider URI generation failed for ${file.name}.", e)
             Toast.makeText(this, R.string.error_share, Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
-             Log.e("MainActivity", "Failed to share file.", e)
+             Log.e("MainActivity", "Failed to create share intent for ${file.name}.", e)
              Toast.makeText(this, R.string.error_share, Toast.LENGTH_SHORT).show()
         }
     }
