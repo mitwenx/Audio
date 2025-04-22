@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.audiowidget.R // Explicit import added just in case
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -21,11 +22,13 @@ class RecordingAdapter(
 
     // ViewHolder holds references to the views in list_item_recording.xml
     inner class RecordingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val filenameTextView: TextView = itemView.findViewById(R.id.recording_filename_text)
+        // Assign findViewById result to the variable 'filenameTextView'
+        val filenameTextView: TextView = itemView.findViewById(R.id.recording_filename_text) // Make sure R.id.recording_filename_text is correct
 
         fun bind(file: File) {
             // Attempt to format the name nicely
             val formattedName = formatFileName(file.name)
+            // Use the VARIABLE 'filenameTextView' here, NOT the ID directly
             filenameTextView.text = formattedName
 
             // Set the click listener on the entire item view
